@@ -1,0 +1,11 @@
+---
+- question: >
+    What is the highest historical closing stock price of illumina from 2020-2024, and when did it occur?
+  answer: |
+    SELECT 
+        date
+        , close 
+    FROM ilmn
+    WHERE date BETWEEN '2020-01-01' AND '2024-12-31' 
+    ORDER BY close DESC
+    LIMIT 1;
