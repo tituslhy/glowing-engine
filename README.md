@@ -8,3 +8,9 @@ To create a virtual environment with the dependencies installed, simply type in 
 ```
 uv sync
 ```
+
+## To run Chainlit app
+This spins up your application on port 8000
+```
+chainlit run app.py
+```
