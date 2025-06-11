@@ -1,14 +1,22 @@
 import os
 from dotenv import load_dotenv, find_dotenv
 import warnings
-from typing import Dict, Optional, Annotated
-
-_ = load_dotenv(find_dotenv())
-warnings.filterwarnings("ignore")
+from typing import Dict, Optional, Annotated, Tuple, List
+import yaml
 
 from vanna.openai.openai_chat import OpenAI_Chat
 from openai import AzureOpenAI
 from vanna.chromadb.chromadb_vector import ChromaDB_VectorStore
+
+_ = load_dotenv(find_dotenv())
+warnings.filterwarnings("ignore")
+
+__curdir__ = os.getcwd()
+if "notebooks" in __curdir__:
+    chroma_path = "../chroma"
+else:
+    chroma_path = "./chroma"
+
 
 class MyVanna(ChromaDB_VectorStore, OpenAI_Chat):
     def __init__(
@@ -31,13 +39,39 @@ class MyVanna(ChromaDB_VectorStore, OpenAI_Chat):
             config = config
         )
 
-print("Instantiating Vanna")
-vn = MyVanna(config={"model": "gpt4-o"})
+def load_query_data(yaml_file_path: str) -> List[Tuple[str, str]]:
+    """Returns a list of training queries for LLM training.
+    
+    This is a mission critical function.
+    """
+    try:
+        with open(yaml_file_path, 'r') as file:
+            try:
+                documents = yaml.safe_load(file)
+                if not isinstance(documents, list):
+                    raise ValueError("YAML content is not a list of documents.")
+            except yaml.YAMLError as yaml_error:
+                raise ValueError(f"Error parsing YAML file: {yaml_error}") from yaml_error
+    except FileNotFoundError as fnf_error:
+        raise FileNotFoundError(f"Error: The file at {yaml_file_path} was not found.") from fnf_error
+    except Exception as e:
+        raise Exception(f"An unexpected error occurred: {e}") from e
 
-print("Connecting Vanna to SQL database")
+    return [(doc.get('question'), doc.get('answer')) for doc in documents]
+    
+print("Instantiating Vanna...")
+vn = MyVanna(config={
+    "model": "gpt4-o",
+    "path": chroma_path,
+})
+
+print("Connecting Vanna to SQL database...")
 vn.connect_to_sqlite("./database/stocks.db")
-db_information_schema = vn.run_sql(
-    "SELECT * FROM INFORMATION_SCHEMA.COLUMNS"
-)
 
-plan = vn.get_training_plan_generic()
+print("Training Vanna...")
+df_ddl = vn.run_sql("SELECT type, sql FROM sqlite_master WHERE sql is not null")
+for ddl in df_ddl['sql'].to_list():
+    vn.train(ddl=ddl)
+vn.train(documentation="Illumina is defined as ilmn")
+vn.train(documentation="Apple is defined as aapl")
+vn.train(documentation="NVIDIA is defined as nvda")
