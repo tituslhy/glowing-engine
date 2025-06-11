@@ -8,6 +8,7 @@ database/
 notebooks/6a8b3382-d49c-40e5-94e8-de18f01ebaf3/
 notebooks/bbd69b7a-1e81-479f-890c-f9e53e1657e3/
 notebooks/ec1a0ea5-64ef-41e3-b71e-271aaba56d5d/
+chroma/
 
 # C extensions
 *.so

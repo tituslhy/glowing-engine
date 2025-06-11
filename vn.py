@@ -5,8 +5,9 @@ from typing import Dict, Optional, Annotated, Tuple, List
 import yaml
 
 from vanna.openai.openai_chat import OpenAI_Chat
-from openai import AzureOpenAI
 from vanna.chromadb.chromadb_vector import ChromaDB_VectorStore
+from openai import AzureOpenAI
+from tqdm import tqdm
 
 _ = load_dotenv(find_dotenv())
 warnings.filterwarnings("ignore")
@@ -14,8 +15,10 @@ warnings.filterwarnings("ignore")
 __curdir__ = os.getcwd()
 if "notebooks" in __curdir__:
     chroma_path = "../chroma"
+    yaml_file_path = "../config/training.yaml"
 else:
     chroma_path = "./chroma"
+    yaml_file_path = "./config/training.yaml"
 
 
 class MyVanna(ChromaDB_VectorStore, OpenAI_Chat):
@@ -75,3 +78,13 @@ for ddl in df_ddl['sql'].to_list():
 vn.train(documentation="Illumina is defined as ilmn")
 vn.train(documentation="Apple is defined as aapl")
 vn.train(documentation="NVIDIA is defined as nvda")
+
+queries = load_query_data(yaml_file_path=yaml_file_path)
+for question, sql in tqdm(queries):
+    vn.train(question=question, sql=sql)
+
+if __name__ == "__main__":
+    from vanna.flask import VannaFlaskApp
+    
+    app = VannaFlaskApp(vn)
+    app.run()

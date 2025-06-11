@@ -9,41 +9,20 @@
     LIMIT 1;
 
 - question: >
-    Is there any correlation between Illumina shares and Apple shares?
+    What is the 7-day rolling average of Illumina shares from 2020-2024?
   answer: |
-    WITH 
-    -- 1) join the two tables on date
-    joined AS (
-      SELECT
-        i.date,
-        i.close AS ilmn_close,
-        a.close AS appl_close
-      FROM ilmn   i
-      JOIN appl  a
-        ON i.date = a.date
-    ),
-    -- 2) compute the counts and sums needed
-    agg AS (
-      SELECT
-        COUNT(*)                        AS n,
-        SUM(ilmn_close)                AS sum_x,
-        SUM(appl_close)                AS sum_y,
-        SUM(ilmn_close * appl_close)   AS sum_xy,
-        SUM(ilmn_close * ilmn_close)   AS sum_x2,
-        SUM(appl_close * appl_close)   AS sum_y2
-      FROM joined    
-    )
     SELECT
-      -- numerator:  n*Σ(xy) - Σx*Σy
-      (agg.n * agg.sum_xy - agg.sum_x * agg.sum_y)
-      /
-      (
-        -- denominator: sqrt([n*Σ(x²) - (Σx)²] * [n*Σ(y²) - (Σy)²])
-        sqrt( (agg.n * agg.sum_x2 - agg.sum_x * agg.sum_x)
-            * (agg.n * agg.sum_y2 - agg.sum_y * agg.sum_y)
-        )
-      ) AS correlation
-    FROM agg;
+    date,
+    close,
+    -- 7-day running average: today + the 6 prior days
+    AVG(close) 
+      OVER (
+        ORDER BY date 
+        ROWS BETWEEN 6 PRECEDING AND CURRENT ROW
+      ) AS avg_7day
+    FROM ilmn
+    WHERE date BETWEEN '2020-01-01' AND '2024-12-31'
+    ORDER BY date;
 
 - question: >
     What is the longest running uptrend in prices of NVIDIA shares?
