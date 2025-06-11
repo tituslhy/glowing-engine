@@ -9,7 +9,7 @@
     LIMIT 1;
 
 - question: >
-    What is the 7-day rolling average of Illumina shares from 2020-2024?
+    What is the 7-day (1 week) rolling average of Illumina shares from 2020-2024?
   answer: |
     SELECT
     date,
