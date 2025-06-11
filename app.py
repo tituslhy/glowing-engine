@@ -153,11 +153,16 @@ async def set_starters():
         cl.Starter(
             label="What is the highest stock price for Illumina?",
             message="What is the highest ever stock price for Illumina?",
-            icon="trending-up-down",
+            icon="public/max_price.png",
         ),
         cl.Starter(
             label="NVIDIA overview",
             message="Give me an overview of NVIDIA's share price from 2020-2024",
-            icon="chart-column",
+            icon="public/chart.png",
+        ),
+        cl.Starter(
+            label="Longest bull run",
+            message="What is the longest running uptrend for Apple share prices?",
+            icon="public/bullrun.png",
         )
     ]
