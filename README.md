@@ -1,5 +1,7 @@
-# glowing-engine
+![image](https://github.com/user-attachments/assets/50ad5254-7f82-43ad-89fb-803fad689346)# glowing-engine
 Text-To-SQL Playground
+
+[![Watch the video](https://raw.githubusercontent.com/tituslhy/glowing-engine/main/images/bullrun_thumbnail.png)](https://raw.githubusercontent.com/tituslhy/glowing-engine/main/media/bullrun_app.mp4)
 
 ## Setup
 This repository uses the [uv package installer](https://docs.astral.sh/uv/pip/packages/). 
