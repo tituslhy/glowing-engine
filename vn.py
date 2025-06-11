@@ -64,7 +64,7 @@ def load_query_data(yaml_file_path: str) -> List[Tuple[str, str]]:
     
 print("Instantiating Vanna...")
 vn = MyVanna(config={
-    "model": "gpt4-o",
+    "model": "gpt-4o",
     "path": chroma_path, #this is the specific key that Vanna looks for (reference: Vanna's ChromaDB_VectorStore source code)
 })
 
