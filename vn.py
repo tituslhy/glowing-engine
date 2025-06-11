@@ -22,6 +22,11 @@ else:
 
 
 class MyVanna(ChromaDB_VectorStore, OpenAI_Chat):
+    """Our main Vanna handler. Inherits from Vanna's ChromaDB_VectorStore
+    and OpenAI_Chat which implement many of the abstract methods in Vanna's
+    Base class. The only thing we need to do is define the constructor where
+    we initialize the different objects."""
+    
     def __init__(
         self, 
         config: Optional[Annotated[
