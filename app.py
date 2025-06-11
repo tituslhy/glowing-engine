@@ -114,9 +114,7 @@ async def chain(human_query: str):
             "content": human_query + f"Data:\n\n{df}",
         }
     )
-    print(f"\n\n---{history}---\n\n")
     chat_history = prepare_chat_history(history)
-    print(chat_history)
     llm = cl.user_session.get("llm")
     
     msg = cl.Message("", type="assistant_message")
@@ -127,7 +125,6 @@ async def chain(human_query: str):
     for chunk in response:
         await msg.stream_token(chunk.delta)
         final_response += chunk.delta
-    
     
     ## Update session chat history
     history.append(
