@@ -5,9 +5,13 @@ from typing import List, Dict
 import chainlit as cl
 from vn import vn
 from llama_index.core.base.llms.types import ChatMessage
-from llama_index.llms.openai import OpenAI
+from llama_index.llms.azure_openai import AzureOpenAI
 
 _ = load_dotenv(find_dotenv())
+
+api_key=os.environ["AZURE_OPENAI_API_KEY"]
+azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"]
+api_version = os.environ["AZURE_API_VERSION"]
 
 def prepare_chat_history(history: List[Dict[str, str]]) -> List[ChatMessage]:
     return [ChatMessage(**chat_history_dict) for chat_history_dict in history]
@@ -15,9 +19,14 @@ def prepare_chat_history(history: List[Dict[str, str]]) -> List[ChatMessage]:
 @cl.on_chat_start
 async def on_chat_start():
     history = []
-    llm = OpenAI(
+    llm = AzureOpenAI(
         model="gpt-4o",
-        temperature=0
+        deployment_name=os.environ["AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME"],
+        api_key = api_key,
+        azure_endpoint = azure_endpoint,
+        api_version = api_version,
+        timeout = 120.0,
+        temperature = 0,
     )
     cl.user_session.set("llm", llm)
     cl.user_session.set("history", history)
