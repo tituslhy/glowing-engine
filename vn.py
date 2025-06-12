@@ -6,7 +6,7 @@ import yaml
 
 from vanna.openai.openai_chat import OpenAI_Chat
 from vanna.chromadb.chromadb_vector import ChromaDB_VectorStore
-from openai import AzureOpenAI
+from openai import OpenAI
 from tqdm import tqdm
 
 _ = load_dotenv(find_dotenv())
@@ -37,12 +37,7 @@ class MyVanna(ChromaDB_VectorStore, OpenAI_Chat):
         ChromaDB_VectorStore.__init__(self, config=config)
         OpenAI_Chat.__init__(
             self,
-            client = AzureOpenAI(
-                azure_endpoint=os.environ["AZURE_OPENAI_ENDPOINT"],
-                azure_deployment=os.environ["AZURE_OPENAI_GPT4O_DEPLOYMENT_NAME"],
-                api_version=os.environ["AZURE_API_VERSION"],
-                api_key=os.environ["AZURE_OPENAI_API_KEY"],                    
-            ),
+            client = OpenAI(),
             config = config
         )
 
@@ -68,7 +63,7 @@ def load_query_data(yaml_file_path: str) -> List[Tuple[str, str]]:
     
 print("Instantiating Vanna...")
 vn = MyVanna(config={
-    "model": "gpt4-o",
+    "model": "gpt-4o",
     "path": chroma_path, #this is the specific key that Vanna looks for (reference: Vanna's ChromaDB_VectorStore source code)
 })
 
