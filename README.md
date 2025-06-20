@@ -1,4 +1,4 @@
-# glowing-engine
+# Introducing Vanna AI
 Text-To-SQL Playground
 
 This GitHub repository is a companion resource to the Medium article [Text-to-SQL Just Got Easier: Meet Vanna AI, Your Text-to-SQL Assistant
